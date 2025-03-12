@@ -12,7 +12,7 @@ HERE = path.abspath(path.dirname(__file__))
 with open(path.join(HERE, 'README.md'), encoding='utf-8') as f:
     LONG_DESCRIPTION = f.read()
 
-with open('pyproject.toml', 'r') as f:
+with open('pyproject.toml', 'rb') as f:
     VERSION = tomli.load(f)['tool']['commitizen']['version']
 
 DESCRIPTION = 'A python library for authenticating requests for various google services including ``gmail``, ``youtube``, ``drive`` and ``calendar``.'

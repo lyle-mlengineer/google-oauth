@@ -35,10 +35,8 @@ test-upload:
 	@twine upload --repository testpypi dist/*
 
 lint:
-	@black oryks_google_oauth/
-	@isort oryks_google_oauth/
-	@flake8 oryks_google_oauth/
+	@black gverify/
+	@isort gverify/
+	@flake8 gverify/
+	# @mypy gverify/
 
-install-oauth:
-	pip uninstall /home/lyle/libraries/google-oauth/dist/oryks_google_oauth-0.0.2-py3-none-any.whl
-	pip install /home/lyle/libraries/google-oauth/dist/oryks_google_oauth-0.0.2-py3-none-any.whl

@@ -9,3 +9,7 @@ sphinx
 sphinx_rtd_theme
 twine
 wheel
+mypy
+pytest
+pytest-cov
+pytest-mock
