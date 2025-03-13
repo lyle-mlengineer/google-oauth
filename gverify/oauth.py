@@ -76,6 +76,12 @@ class GoogleOAuth(BaseModel):
         with open(credentials_path, "w", encoding="utf-8") as f:
             dump(credentials_dict, f)
 
+    def get_youtube_client(self, credentials: Credentials) -> Any:
+        youtube_client = build(
+            'youtube', 'v3', credentials=credentials
+        )
+        return youtube_client
+
     def credentials_expired(self, credentials: Credentials) -> bool:
         youtube_client = self.get_youtube_client(credentials=credentials)
         youtube_find_request = youtube_client.search().list(q="", part="id")
