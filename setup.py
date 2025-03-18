@@ -34,7 +34,7 @@ setup(
     name='gverify',
     packages=find_packages(
         include=[
-            'gverify',
+            'gverify'
         ]
     ),
     version=VERSION,

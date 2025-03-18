@@ -1,6 +1,8 @@
 from json import dump, load
 from os import mkdir, path
 from typing import Any, Optional
+from json.decoder import JSONDecodeError
+from .exceptions import InvalidSecretsFileException
 
 from google.auth.exceptions import RefreshError
 from google.oauth2.credentials import Credentials
@@ -53,16 +55,26 @@ class GoogleOAuth(BaseModel):
         return credentials
 
     def generate_credentials_google_server(self) -> Credentials:
-        flow = InstalledAppFlow.from_client_secrets_file(self.secrets_file, self.scopes)
+        try:
+            flow = InstalledAppFlow.from_client_secrets_file(self.secrets_file, self.scopes)
+        except JSONDecodeError:
+            raise InvalidSecretsFileException(
+                f"Invalid secrets file: {self.secrets_file}"
+            )
         credentials = flow.run_local_server(port=0)
         return credentials
 
     def generate_credentials_google_console(self) -> Credentials:
-        flow = Flow.from_client_secrets_file(
-            self.secrets_file,
-            scopes=self.scopes,
-            redirect_uri="urn:ietf:wg:oauth:2.0:oob",
-        )
+        try:
+            flow = Flow.from_client_secrets_file(
+                self.secrets_file,
+                scopes=self.scopes,
+                redirect_uri="urn:ietf:wg:oauth:2.0:oob",
+            )
+        except JSONDecodeError:
+            raise InvalidSecretsFileException(
+                f"Invalid secrets file: {self.secrets_file}"
+            )
         auth_url, _ = flow.authorization_url(prompt="consent")
         print("Please go to this URL: {}".format(auth_url))
         code = input("Enter the authorization code: ")
