@@ -1,3 +1,9 @@
+## v0.2.0 (2025-03-20)
+
+### Feat
+
+- gets oauth client from credentials
+
 ## v0.1.1 (2025-03-18)
 
 ### Fix
