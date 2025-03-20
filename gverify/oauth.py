@@ -1,8 +1,7 @@
 from json import dump, load
+from json.decoder import JSONDecodeError
 from os import mkdir, path
 from typing import Any, Optional
-from json.decoder import JSONDecodeError
-from .exceptions import InvalidSecretsFileException
 
 from google.auth.exceptions import RefreshError
 from google.oauth2.credentials import Credentials
@@ -10,13 +9,15 @@ from google_auth_oauthlib.flow import Flow, InstalledAppFlow
 from googleapiclient.discovery import build
 from pydantic import BaseModel, Field
 
+from .exceptions import InvalidSecretsFileException
+
 
 class GoogleOAuth(BaseModel):
-    secrets_file: str
+    secrets_file: Optional[str] = None
     scopes: list[str] = Field(default_factory=list)
-    api_service_name: str
-    api_version: str
-    credentials_dir: str
+    api_service_name: Optional[str] = None
+    api_version: Optional[str] = None
+    credentials_dir: Optional[str] = None
     credentials_file_name: Optional[str] = "credentials.json"
 
     def credentials_to_dict(self, credentials: Credentials) -> dict:
@@ -56,7 +57,9 @@ class GoogleOAuth(BaseModel):
 
     def generate_credentials_google_server(self) -> Credentials:
         try:
-            flow = InstalledAppFlow.from_client_secrets_file(self.secrets_file, self.scopes)
+            flow = InstalledAppFlow.from_client_secrets_file(
+                self.secrets_file, self.scopes
+            )
         except JSONDecodeError:
             raise InvalidSecretsFileException(
                 f"Invalid secrets file: {self.secrets_file}"
@@ -89,9 +92,7 @@ class GoogleOAuth(BaseModel):
             dump(credentials_dict, f)
 
     def get_youtube_client(self, credentials: Credentials) -> Any:
-        youtube_client = build(
-            'youtube', 'v3', credentials=credentials
-        )
+        youtube_client = build("youtube", "v3", credentials=credentials)
         return youtube_client
 
     def credentials_expired(self, credentials: Credentials) -> bool:
@@ -124,3 +125,12 @@ class GoogleOAuth(BaseModel):
             self.save_credentials(credentials=credentials)
         oauth_client = self.get_oauth_client(credentials=credentials)
         return oauth_client
+
+    def authenticate_from_credentials(self, credentails: Credentials) -> Any:
+        oauth_client = self.get_oauth_client(credentials=credentails)
+        return oauth_client
+
+    def load_credentials(self, credentials_path: str) -> Credentials:
+        with open(credentials_path, "r", encoding="utf-8") as creds:
+            credentials = Credentials(**load(creds))
+        return credentials
