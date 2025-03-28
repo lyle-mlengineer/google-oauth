@@ -1,3 +1,10 @@
+## v0.2.1 (2025-03-28)
+
+### Fix
+
+- adds the scopes fro the gmail extension.
+- adds the scopes fro the gmail extension.
+
 ## v0.2.0 (2025-03-20)
 
 ### Feat
