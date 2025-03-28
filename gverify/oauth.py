@@ -95,14 +95,29 @@ class GoogleOAuth(BaseModel):
         youtube_client = build("youtube", "v3", credentials=credentials)
         return youtube_client
 
+    def get_gmail_client(self, credentials: Credentials) -> Any:
+        gmail_client = build("gmail", "v1", credentials=credentials)
+        return gmail_client
+
     def credentials_expired(self, credentials: Credentials) -> bool:
-        youtube_client = self.get_youtube_client(credentials=credentials)
-        youtube_find_request = youtube_client.search().list(q="", part="id")
-        try:
-            youtube_find_request.execute()
-        except RefreshError:
+        client = None
+        if self.api_service_name == "gmail":
+            client = self.get_gmail_client(credentials=credentials)
+            try:
+                client.users().getProfile(userId="me").execute()
+            except RefreshError:
+                return True
+            return False
+        elif self.api_service_name == "youtube":
+            client = self.get_youtube_client(credentials=credentials)
+            youtube_find_request = client.search().list(q="", part="id")
+            try:
+                youtube_find_request.execute()
+            except RefreshError:
+                return True
+            return False
+        if not client:
             return True
-        return False
 
     def get_oauth_client(self, credentials: Credentials) -> Any:
         oauth_client = build(
