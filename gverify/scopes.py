@@ -1,4 +1,4 @@
-from enum import StrEnum, Enum
+from enum import Enum, StrEnum
 
 
 class YouTubeScopes(Enum):
@@ -27,8 +27,12 @@ class GoogleDriveScopes(Enum):
 class GMailScopes(StrEnum):
     send_emails = "https://www.googleapis.com/auth/gmail.addons.current.action.compose"
     action = "https://www.googleapis.com/auth/gmail.addons.current.message.action"
-    message_metadata = "https://www.googleapis.com/auth/gmail.addons.current.message.metadata"
-    message_readonly = "https://www.googleapis.com/auth/gmail.addons.current.message.readonly"
+    message_metadata = (
+        "https://www.googleapis.com/auth/gmail.addons.current.message.metadata"
+    )
+    message_readonly = (
+        "https://www.googleapis.com/auth/gmail.addons.current.message.readonly"
+    )
     labels = "https://www.googleapis.com/auth/gmail.labels"
     send = "https://www.googleapis.com/auth/gmail.send"
     readonly = "https://www.googleapis.com/auth/gmail.readonly"
